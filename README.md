@@ -1,2 +1,12 @@
-# sistemas_embebidos
-Laboratorios de Diseño e implementación de sistemas embebidos
+# DISEÑO E IMPLEMENTACIÓN DE SISTEMAS EMBEBIDOS
+UNIVERSIDAD DEL VALLE\
+FACULTAD DE INGENIERÍA\
+ESCUELA DE INGENIERÍA ELÉCTRICA Y ELECTRÓNICA\
+DISEÑO E IMPLEMENTACIÓN DE SISTEMAS EMBEBIDOS\
+DOCENTE: BREYNER POSSO
+
+### Integrantes
+**Andrés Felipe Marín Ramírez: 202502859**\
+**David Esteban Sandoval Flórez: 202507595**\
+
+## Laboratorios de Diseño e Implementación de Sistemas Embebidos
