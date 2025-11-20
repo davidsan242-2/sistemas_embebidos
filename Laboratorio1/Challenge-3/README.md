@@ -2,82 +2,72 @@
 
 **Weather Station**\
 Design and implement an embedded system to measure temperature and humidity using two sensors: DHT22 (temperature and humidity) LM75.\
-The system must read the sensors every 5 seconds using a non-blocking approach, display the temperature and humidity values locally on an LCD,\ 
+The system must read the sensors every 5 seconds using a non-blocking approach, display the temperature and humidity values locally on an LCD,
 and send them through the Serial Monitor for remote observation or debugging.
 
 ## Metodología de diseño e implementación de sistemas embebidos
 ### 1. Análisis de requerimientos
 #### Requerimientos funcionales
 
-- FR-01: Al iniciar el sistema debe comenzar en estado de pausa, con todos los LEDs apagados
-- FR-02: Al presionar el botón por primera vez el sistema debe encender los LEDs en secuencia a intervalos de 1s, solamente puede haber un LED encendido a la vez
-- FR-03: Al presionar el botón por segunda vez el sistema debe quedar en pausa. El LED que estaba encendido cuando se presionó el botón debe quedar encendido.
-- FR-04: Al presionar el botón por tercera vez el sistema debe seguir encendiendo y apagando los LEDS, comenzando por donde terminó.
-- FR-05: El botón debe implementar algún método de antirrebote para evitar inconsistencias en el comportamiento del sistema
-- FR-06: El botón debe activarse con un pulso negativo
+- FR-01: El sistema debe realizar la medición de la tempratura y humedad del ambiente
+- FR-02: El sistema debe desplegar el valor de la temperatura y humedad el ambiente en una pantalla LCD de 16x2 en diferentes filas. Es decir que mostrará la temperatura en la primera fila y la humedad en la segunda fila
+- FR-03: El sistema realizará la medición de temperatura y humedad cada 5 segundos
+- FR-04: El sistema mostrará el valor de la temperatura y humedad en la consola serial en líneas distintas
+- FR-05: El sistema debe utilizar un medidor de temperatura y humedad DHT22
 
 #### Requerimientos no funcionales
 
-- NFR-01: El sistema debe iniciar automaticamente al conectarse a la energía
-- NFR-02: Los LEDs deben proveer el tipo de luminosidad de chorro
-- NFR-03: Los LEDSs debe arreglarse en línea recta con un espaciado uniforme
-- NFR-04: El color de los 4 LEDs debe ser distinto
+- NFR-01: La pantalla LCD debe ser de 16x2 y tenr luz de fondo para mejor visualización
 
 #### Restricciones
 
-- CON-01: Los LEDs debe conectarse a los pines GPIO y activarse con señales digitales
-- CON-02: Debe implementarse una resistencia pull-Up interna para el botón
-- CON-03: Los LEDs debe conectarse en serie con una resistencia para limitar la corriente
-- CON-04: Se debe entregar el código del sistema en lenguaje Arduino C++ en un archivo con extensión **.ino**
-- CON-05: Se dbe hacer una simulación usando [Wokwi](https://wokwi.com/)
-- CON-06: Se debe hacer la implementación del sistema usando una placa de desarrollo ESP32 S3 y una protoboard
+- CON-01: La pantalla LCD debe conectarse a la board ESP32 usando protocolo de comunicación I2C
+- CON-02: El sensor DHT22 debe conectarse a la board ESP32 suando los pines GPIO con señales digitales
+- CON-03: La pantalla LCD debe conectarse a la alimentación de 5V de la board ESP32
+- CON-04: El sensor DHT22 debe conectarse a la alimentación de 3.3V de la board ESP32
+- CON-05: Se debe entregar el código del sistema en lenguaje Arduino C++ en un archivo con extensión **.ino**
+- CON-06: Se dbe hacer una simulación usando [Wokwi](https://wokwi.com/)
+- CON-07: Se debe hacer la implementación del sistema usando una placa de desarrollo ESP32 S3 y una protoboard
 
 ### 2. Análisis del sistema y diseño (arquitectura y componentes)
 
 1. Placa de desarrollo ESP32 S3 DevKit C
-2. Pulsador de cuatro pines
-3. 4 LEDs de 3mm de diferentes colores con luminosidad a chorro
-4. 4 Resistencias de 220 Ohm, 1/4 W y tolerancia de 10%.
-5. 6 jumpers hembra-macho
-6. 2 jumpers macho-macho
-7. Protoboard
+2. Sensor de temperatura y humedad DHT22
+3. Pantalla LCD de 16x2 con protocolo de comunicación I2C, luz de iluminación y fondo azul
+4. Protoboard
 
 ### 3. Diseño de Hardware e Integración
 
-![3. Diseño de Harware e Integración](Challenge1-Diseño-Hardware-Sim.png)
+![3. Diseño de Harware e Integración](Challenge3-Diseño-Hardware-Sim.png)
 
 ### 4. Diseño y desarrollo del firmware
 
 **Pseudocódigo**
 ```
-SET estado ← Pausa
-SET ledEncendido ← 1
-SET intervaloLEDS ← 1000
+SET ultimaActualizacion ← 0
+SET intervalo ← 5000
+
+INICIALIZAR CONSOLA SERIAL
+INICIALIZAR PROTOCOLO I2C
+INICIALIZAR PANTALLA LCD
+INICIALIZAR SENSOR DHT22
 
 INICIO CICLO
 
-  SI boton presionado ENTONCES
-    SI estado = Pausa ENTONCES
-      SET estado ← Ejecucion
-    SINO
-      SET estado ← Pausa
-    FIN SI
-  FIN SI
-
-  SI (estado = Ejecucion) & (tiempoActual - ultimaActualización) > intervaloLEDS ENTONCES
+  SI (tiempoActual - ultimaActualización) > intervalo ENTONCES
     SET ultimaActualización ← tiempoActual
 
-    PARA I DE 1 A 4
-      APAGA LED No. I
-    FIN PARA
+    SET temperatura ← LECTURA DE TEMPERATURA
+    SET humedad ← LECTURA DE HUMEDAD
 
-    ENCENDER LED No. ledEncendido
+    LIMPIAR PANTALLA LCD
+    DEFINIR POSICIÓN LCD (0,0)
+    IMPRIMIR TEXTO LCD "T: " + temperatura + " C"
+    DEFINIR POSICIÓN LCD (0,1)
+    IMPRIMIR TEXTO LCD "H: " + humedad + " C"
 
-    SET ledEncendido ← ledEncendido + 1
-
-    SI ledEncendido >= 5 ENTONCES
-      SET ledEncendido ← 1
-    FIN SI
+    IMPRIMIR LINEA CONSOLA SERIAL "T: " + temperatura + " C"
+    IMPRIMIR LINEA CONSOLA SERIAL "H: " + humedad + " C"
   FIN SI
 
 FIN CICLO
@@ -86,130 +76,119 @@ FIN CICLO
 **Código simulación**
 
 ```
-// Pines de los LEDs (ajusta según tu conexión)
-const int leds[4] = {16, 4, 0, 2};
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include "DHTesp.h"
 
-// Pin del botón
-const int pinBoton = 22;
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-// Variables de control
-bool activo = false;                // Estado: encendido/apagado de la secuencia
-int ledActual = 0;                  // LED actual encendido
-unsigned long ultimaActualizacion = 0;        // Última actualización de LED
-unsigned long tiempoBoton = 0;    // Tiempo del último cambio del botón
-const unsigned long intervalo = 1000; // Intervalo entre LEDs (1 segundo)
-const unsigned long tiempoRebote = 200; // Antirrebote del botón (200 ms)
+const int DHT_PIN = 25;
+DHTesp dhtSensor;
 
-// Lectura previa del botón
-int ultimoEstadoBoton = HIGH;
+const int pinSDA = 21;
+const int pinSCL = 22;
+
+unsigned long ultimaActualizacion = 0;
+const unsigned long intervalo = 5000;
 
 void setup() {
-  // Configuración de pines
-  for (int i = 0; i < 4; i++) {
-    pinMode(leds[i], OUTPUT);
-    digitalWrite(leds[i], LOW);
-  }
-  pinMode(pinBoton, INPUT_PULLUP); // Botón con resistencia interna
-  Serial.begin(9600);
+  //Inicializar la comunicación por puerto serial
+  Serial.begin(115200);
+  //Inicializar la comunicación I2C
+  Wire.begin(pinSDA, pinSCL);
+
+  //Inicializar LCD
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Est. Tiempo");
+
+  Serial.println("Estación de tiempo");
+  dhtSensor.setup(DHT_PIN, DHTesp::DHT22);
 }
 
 void loop() {
-  // --- LECTURA DEL BOTÓN CON ANTIRREBOTE ---
-  int estadoBoton = digitalRead(pinBoton);
-
-  if (estadoBoton == LOW && ultimoEstadoBoton == HIGH && (millis() - tiempoBoton > tiempoRebote)) {
-    activo = !activo; // Cambia el estado (toggle)
-    tiempoBoton = millis();
-    Serial.print("Estado: ");
-    Serial.println(activo ? "Activo" : "Parado");
-  }
-  ultimoEstadoBoton = estadoBoton;
-
-  // --- CONTROL DE LA SECUENCIA ---
-  if (activo && (millis() - ultimaActualizacion >= intervalo)) {
+  // put your main code here, to run repeatedly:
+  if ((millis() - ultimaActualizacion) >= intervalo)
+  {
     ultimaActualizacion = millis();
+    TempAndHumidity  data = dhtSensor.getTempAndHumidity();
 
-    // Apagar todos los LEDs
-    for (int i = 0; i < 4; i++) {
-      digitalWrite(leds[i], LOW);
-    }
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("T: " + String(data.temperature, 2) + " C");
 
-    // Encender el LED actual
-    digitalWrite(leds[ledActual], HIGH);
+    lcd.setCursor(0, 1);
+    lcd.print("H: " + String(data.humidity, 1) + " %");
 
-    // Avanzar al siguiente LED
-    ledActual++;
-    if (ledActual >= 4) {
-      ledActual = 0; // Vuelve al primero (cíclico)
-    }
+
+    Serial.println("Temperatura: " + String(data.temperature, 2) + "°C");
+    Serial.println("Humedad: " + String(data.humidity, 1) + "%");
+    Serial.println("---");  
   }
 }
 ```
+
 **Código implementación**
 
 ```
-// Pines de los LEDs (ajusta según tu conexión)
-const int leds[4] = {47, 48, 45, 35};
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include "DHTesp.h"
 
-// Pin del botón
-const int pinBoton = 36;
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-// Variables de control
-bool activo = false;                // Estado: encendido/apagado de la secuencia
-int ledActual = 0;                  // LED actual encendido
-unsigned long ultimaActualizacion = 0;        // Última actualización de LED
-unsigned long tiempoBoton = 0;    // Tiempo del último cambio del botón
-const unsigned long intervalo = 1000; // Intervalo entre LEDs (1 segundo)
-const unsigned long tiempoRebote = 200; // Antirrebote del botón (200 ms)
+const int DHT_PIN = 11;
+DHTesp dhtSensor;
 
-// Lectura previa del botón
-int ultimoEstadoBoton = HIGH;
+const int pinSDA = 8;
+const int pinSCL = 9;
+
+unsigned long ultimaActualizacion = 0;
+const unsigned long intervalo = 5000;
 
 void setup() {
-  // Configuración de pines
-  for (int i = 0; i < 4; i++) {
-    pinMode(leds[i], OUTPUT);
-    digitalWrite(leds[i], LOW);
-  }
-  pinMode(pinBoton, INPUT_PULLUP); // Botón con resistencia interna
-  Serial.begin(9600);
+  //Inicializar la comunicación por puerto serial
+  Serial.begin(115200);
+  //Inicializar la comunicación I2C
+  Wire.begin(pinSDA, pinSCL);
+
+  //Inicializar LCD
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Est. Tiempo");
+
+  Serial.println("Estación de tiempo");
+  dhtSensor.setup(DHT_PIN, DHTesp::DHT22);
 }
 
 void loop() {
-  // --- LECTURA DEL BOTÓN CON ANTIRREBOTE ---
-  int estadoBoton = digitalRead(pinBoton);
-
-  if (estadoBoton == LOW && ultimoEstadoBoton == HIGH && (millis() - tiempoBoton > tiempoRebote)) {
-    activo = !activo; // Cambia el estado (toggle)
-    tiempoBoton = millis();
-    Serial.print("Estado: ");
-    Serial.println(activo ? "Activo" : "Parado");
-  }
-  ultimoEstadoBoton = estadoBoton;
-
-  // --- CONTROL DE LA SECUENCIA ---
-  if (activo && (millis() - ultimaActualizacion >= intervalo)) {
+  // put your main code here, to run repeatedly:
+  if ((millis() - ultimaActualizacion) >= intervalo)
+  {
     ultimaActualizacion = millis();
+    TempAndHumidity  data = dhtSensor.getTempAndHumidity();
 
-    // Apagar todos los LEDs
-    for (int i = 0; i < 4; i++) {
-      digitalWrite(leds[i], LOW);
-    }
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("T: " + String(data.temperature, 2) + " C");
 
-    // Encender el LED actual
-    digitalWrite(leds[ledActual], HIGH);
+    lcd.setCursor(0, 1);
+    lcd.print("H: " + String(data.humidity, 1) + " %");
 
-    // Avanzar al siguiente LED
-    ledActual++;
-    if (ledActual >= 4) {
-      ledActual = 0; // Vuelve al primero (cíclico)
-    }
+
+    Serial.println("Temperatura: " + String(data.temperature, 2) + "°C");
+    Serial.println("Humedad: " + String(data.humidity, 1) + "%");
+    Serial.println("---");  
   }
 }
 ```
 ### 5. Pruebas y validación
 
-[Enlace al archivo con el código Arduino/C++](./Lab1-Challenge1/Lab1-Challenge1.ino)
+[Enlace al archivo con el código Arduino/C++](./Lab1-Challenge3/Lab1-Challenge3.ino)
 
-[Enlace a la simulación](https://wokwi.com/projects/445808350528060417)
+[Enlace a la simulación](https://wokwi.com/projects/447838440179086337)
 
