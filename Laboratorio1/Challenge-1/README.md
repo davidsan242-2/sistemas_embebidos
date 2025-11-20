@@ -35,5 +35,19 @@ The system must meet the following conditions:
 - CON-05: Se dbe hacer una simulación usando [Wokwi](https://wokwi.com/)
 - CON-06: Se debe hacer la implementación del sistema usando una placa de desarrollo ESP32 S3 y una protoboard
 
+### 2. Análisis del sistema y diseño (arquitectura y componentes)
+
+1. Placa de desarrollo ESP32 S3 DevKit C
+2. Pulsador de cuatro pines
+3. 4 LEDs de 3mm de diferentes colores con luminosidad a chorro
+4. 4 Resistencias de 220 Ohm, 1/4 W y tolerancia de 10%.
+5. 6 jumpers hembra-macho
+6. 2 jumpers macho-macho
+7. Protoboard
+
+### 3. Diseño de Hardware e Integración
+
+
+
 [Enlace a la simulación](https://wokwi.com/projects/445808350528060417)
 
