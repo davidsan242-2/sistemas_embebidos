@@ -208,7 +208,9 @@ void loop() {
   }
 }
 ```
+###. 5 Pruebas y validación
 
+[Enlace a la carpeta con el código Arduino/C++]()
 
 [Enlace a la simulación](https://wokwi.com/projects/445808350528060417)
 
