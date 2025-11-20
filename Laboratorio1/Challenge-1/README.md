@@ -210,7 +210,7 @@ void loop() {
 ```
 ###. 5 Pruebas y validación
 
-[Enlace a la carpeta con el código Arduino/C++]()
+[Enlace al archivo con el código Arduino/C++](./Lab1-Challenge1/Lab1-Challenge1.ino)
 
 [Enlace a la simulación](https://wokwi.com/projects/445808350528060417)
 
