@@ -40,171 +40,77 @@ Monitor.
 
 ### 3. Diseño de Hardware e Integración
 
-![3. Diseño de Harware e Integración](Diseño-Hardware-Sim.png)
+![3. Diseño de Harware e Integración](Challenge2-Diseño-Hardware-Sim.png)
 
 ### 4. Diseño y desarrollo del firmware
 
 **Pseudocódigo**
 ```
-SET estado ← Pausa
-SET ledEncendido ← 1
-SET intervaloLEDS ← 1000
+SET factor_calibración ← 50.0 / 21000.0
+INICIALIZAR SALIDA SERIAL
+INICIALIZAR BÁSCULA
+INICIALIZAR PANTALLA LCD
 
 INICIO CICLO
+  SET lectura ← PESO DE LA BÁSCULA
+  SET peso ← lectura * factor_calibración
 
-  SI boton presionado ENTONCES
-    SI estado = Pausa ENTONCES
-      SET estado ← Ejecucion
-    SINO
-      SET estado ← Pausa
-    FIN SI
-  FIN SI
+  DEFINIR POSICIÓN LCD (0, 0)
+  MOSTRAR TEXTO LCD "Peso: "
+  DEFINIR POSICIÓN LCD (6, 0)
+  MOSTRAR TEXTO LCD peso
+  MOSTRAR TEXTO LCD " Kg"
 
-  SI (estado = Ejecucion) & (tiempoActual - ultimaActualización) > intervaloLEDS ENTONCES
-    SET ultimaActualización ← tiempoActual
-
-    PARA I DE 1 A 4
-      APAGA LED No. I
-    FIN PARA
-
-    ENCENDER LED No. ledEncendido
-
-    SET ledEncendido ← ledEncendido + 1
-
-    SI ledEncendido >= 5 ENTONCES
-      SET ledEncendido ← 1
-    FIN SI
-  FIN SI
-
+  MOSTRAR TEXTO CONSOLA SERIAL "Peso: " + peso + " Kg"
 FIN CICLO
 ```
 
 **Código simulación**
 
 ```
-// Pines de los LEDs (ajusta según tu conexión)
-const int leds[4] = {16, 4, 0, 2};
+#include "HX711.h"
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 
-// Pin del botón
-const int pinBoton = 22;
+const int pinDOUT = 2;
+const int pinSCK = 4;
 
-// Variables de control
-bool activo = false;                // Estado: encendido/apagado de la secuencia
-int ledActual = 0;                  // LED actual encendido
-unsigned long ultimaActualizacion = 0;        // Última actualización de LED
-unsigned long tiempoBoton = 0;    // Tiempo del último cambio del botón
-const unsigned long intervalo = 1000; // Intervalo entre LEDs (1 segundo)
-const unsigned long tiempoRebote = 200; // Antirrebote del botón (200 ms)
+HX711 scale;
+float SCALE_50KG = 50.0 / 21000.0;
 
-// Lectura previa del botón
-int ultimoEstadoBoton = HIGH;
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void setup() {
-  // Configuración de pines
-  for (int i = 0; i < 4; i++) {
-    pinMode(leds[i], OUTPUT);
-    digitalWrite(leds[i], LOW);
+  Serial.begin(115200);
+
+  lcd.init();
+  lcd.backlight();
+  lcd.print("Initializing...");
+
+  scale.begin(pinDOUT, pinSCK);
+  while (!scale.is_ready()) {
+    delay(50);
   }
-  pinMode(pinBoton, INPUT_PULLUP); // Botón con resistencia interna
-  Serial.begin(9600);
+
+  scale.set_scale(1.0);
+
+  lcd.clear();
 }
 
 void loop() {
-  // --- LECTURA DEL BOTÓN CON ANTIRREBOTE ---
-  int estadoBoton = digitalRead(pinBoton);
+  float raw = scale.get_units(1);
+  float kg = raw * SCALE_50KG;
 
-  if (estadoBoton == LOW && ultimoEstadoBoton == HIGH && (millis() - tiempoBoton > tiempoRebote)) {
-    activo = !activo; // Cambia el estado (toggle)
-    tiempoBoton = millis();
-    Serial.print("Estado: ");
-    Serial.println(activo ? "Activo" : "Parado");
-  }
-  ultimoEstadoBoton = estadoBoton;
-
-  // --- CONTROL DE LA SECUENCIA ---
-  if (activo && (millis() - ultimaActualizacion >= intervalo)) {
-    ultimaActualizacion = millis();
-
-    // Apagar todos los LEDs
-    for (int i = 0; i < 4; i++) {
-      digitalWrite(leds[i], LOW);
-    }
-
-    // Encender el LED actual
-    digitalWrite(leds[ledActual], HIGH);
-
-    // Avanzar al siguiente LED
-    ledActual++;
-    if (ledActual >= 4) {
-      ledActual = 0; // Vuelve al primero (cíclico)
-    }
-  }
+  lcd.setCursor(0, 0);
+  lcd.print("Peso:      ");
+  lcd.setCursor(6, 0);
+  lcd.print(kg, 2);
+  lcd.print("kg");
+  Serial.println("Peso: " + String(kg, 2) + " Kg");
+  delay(300);
 }
 ```
-**Código implementación**
 
-```
-// Pines de los LEDs (ajusta según tu conexión)
-const int leds[4] = {47, 48, 45, 35};
-
-// Pin del botón
-const int pinBoton = 36;
-
-// Variables de control
-bool activo = false;                // Estado: encendido/apagado de la secuencia
-int ledActual = 0;                  // LED actual encendido
-unsigned long ultimaActualizacion = 0;        // Última actualización de LED
-unsigned long tiempoBoton = 0;    // Tiempo del último cambio del botón
-const unsigned long intervalo = 1000; // Intervalo entre LEDs (1 segundo)
-const unsigned long tiempoRebote = 200; // Antirrebote del botón (200 ms)
-
-// Lectura previa del botón
-int ultimoEstadoBoton = HIGH;
-
-void setup() {
-  // Configuración de pines
-  for (int i = 0; i < 4; i++) {
-    pinMode(leds[i], OUTPUT);
-    digitalWrite(leds[i], LOW);
-  }
-  pinMode(pinBoton, INPUT_PULLUP); // Botón con resistencia interna
-  Serial.begin(9600);
-}
-
-void loop() {
-  // --- LECTURA DEL BOTÓN CON ANTIRREBOTE ---
-  int estadoBoton = digitalRead(pinBoton);
-
-  if (estadoBoton == LOW && ultimoEstadoBoton == HIGH && (millis() - tiempoBoton > tiempoRebote)) {
-    activo = !activo; // Cambia el estado (toggle)
-    tiempoBoton = millis();
-    Serial.print("Estado: ");
-    Serial.println(activo ? "Activo" : "Parado");
-  }
-  ultimoEstadoBoton = estadoBoton;
-
-  // --- CONTROL DE LA SECUENCIA ---
-  if (activo && (millis() - ultimaActualizacion >= intervalo)) {
-    ultimaActualizacion = millis();
-
-    // Apagar todos los LEDs
-    for (int i = 0; i < 4; i++) {
-      digitalWrite(leds[i], LOW);
-    }
-
-    // Encender el LED actual
-    digitalWrite(leds[ledActual], HIGH);
-
-    // Avanzar al siguiente LED
-    ledActual++;
-    if (ledActual >= 4) {
-      ledActual = 0; // Vuelve al primero (cíclico)
-    }
-  }
-}
-```
 ### 5. Pruebas y validación
-
-[Enlace al archivo con el código Arduino/C++](./Lab1-Challenge1/Lab1-Challenge1.ino)
 
 [Enlace a la simulación](https://wokwi.com/projects/448158164631347201)
