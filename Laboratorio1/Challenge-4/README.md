@@ -374,4 +374,4 @@ void loop() {
 ```
 ### 5. Pruebas y validación
 
-[Enlace al archivo con el código Arduino/C++](./Lab1-Challenge4.ino)
+[Enlace al archivo con el código Arduino/C++](./Lab1-Challenge4/Lab1-Challenge4.ino)
