@@ -52,7 +52,7 @@ e. (5p) The X KEY will be used to stop the motor immediately.
 4. Protoboard
 5. Jumpers de distintos tipos
 6. Adaptador de voltaje de 12V DC 1A
-7. Motor con caja de engranajes y encoder modelo JGA25-370 12 V 200RMP
+7. Motor con caja de engranajes y encoder modelo JGA25-370 12 V 200RPM
 
 ### 3. Diseño de Hardware e Integración
 
