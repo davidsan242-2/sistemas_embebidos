@@ -35,5 +35,5 @@ DOCENTE: BREYNER POSSO
 3. Subir los sketches
 - Abrir el sketch del challenge respectivo en File/Open
 - Dar click en el botón Upload de la barra de herramientas
-- Abrir la consola serial en Tools/Serial Mnnitor
+- Abrir la consola serial en Tools/Serial Monitor
 
