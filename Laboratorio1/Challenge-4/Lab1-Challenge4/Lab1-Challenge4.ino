@@ -7,11 +7,11 @@ const int dirPin1 = 15;
 const int dirPin2 = 16;
 const int velPin = 7;
 
-const int pinChannelA = 18;
+const int pinChannelA = 9;
 const int pinChannelB = 46;
 
-const int pinSDA = 8;
-const int pinSCL = 9;
+const int pinSDA = 40;
+const int pinSCL = 39;
 
 const int freq = 5000;
 const int resolution = 8;
@@ -86,7 +86,6 @@ bool isInteger(String str) {
 
 void encenderMotor() {
   ledcAttach(velPin, freq, resolution);
-  
   if (direccionActual == SENTIDO_HORARIO)
   {
     digitalWrite(dirPin1, LOW);
@@ -96,7 +95,6 @@ void encenderMotor() {
     digitalWrite(dirPin1, HIGH);
     digitalWrite(dirPin2, LOW);    
   }
-
   ledcWrite(velPin, 30);
 }
 
@@ -147,8 +145,10 @@ void setup() {
   digitalWrite(velPin, LOW);
 
   //Configurar los pines digitales de entrada del encoder del motor
-  pinMode(pinChannelA, INPUT); //pinMode(pinChannelA, INPUT_PULLUP);
-  pinMode(pinChannelB, INPUT); //pinMode(pinChannelB, INPUT_PULLUP);
+  //pinMode(pinChannelA, INPUT_PULLUP);
+  pinMode(pinChannelA, INPUT); 
+  pinMode(pinChannelB, INPUT);
+  //pinMode(pinChannelB, INPUT_PULLUP);
   attachInterrupt(pinChannelA, interrupcionCanalA, RISING);
   attachInterrupt(pinChannelB, interrupcionCanalB, RISING);
 
@@ -261,6 +261,7 @@ void loop() {
       {
         ultimaActualizacionEjecucion = millis();
         rpmCalculado =  10.0 * contadorPulsosA * (1.0 / pprE) * 60.0;
+
         contadorPulsosA = 0;
         contadorPulsosB = 0;
 
@@ -301,7 +302,7 @@ void loop() {
         Serial.print("PV (RPM): ");
         Serial.println(rpmCalculado);
         Serial.print("ERROR (RPM): ");
-        Serial.println(error);             
+        Serial.println(error);               
       }        
     break;
   } 
