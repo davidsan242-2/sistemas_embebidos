@@ -1,25 +1,23 @@
-# 1. Challenge-1 (Simulation and Implementation)
+# 1. Challenge 2 - ESP32 MQTT-Based IoT System
 
-Design and implement a standalone HTTP web server running on the ESP32.
-
-The system must:
-
-**Functional Requirements**\
-**1. Environmental Monitoring**
-  - Read and display temperature and relative humidity using the DHT22 sensor.
-  - Refresh values periodically (configurable interval, recommended 1–5 seconds).
-
-**2. User Input Interface**
-  - Provide a web interface allowing the user to set a motor speed setpoint (RPM).
-  - Show the entered setpoint in the Serial Monitor in real time.
-  - Motor hardware is not required—focus on interface and data flow.
-
-**3. Web UI Requirements**
-- The server must be mobile-responsive and accessible from any device on the same network.
-- UI must clearly display:
-  * Sensor readings
-  * Input field for RPM setpoint
-  * Timestamp of last update
+2. Challenge 2 – ESP32 MQTT-Based IoT System
+Design and implement a system where the ESP32 communicates using the MQTT protocol. The system must:
+Functional Requirements
+1. Telemetry Publishing
+o Publish temperature and humidity readings periodically (topic naming must follow good
+structure, e.g., esp32/sensors/dht22).
+2. Data Logging or Visualization
+o Use an MQTT dashboard to show sensor values over time.
+3. Setpoint Subscription
+o Subscribe to a topic (e.g., esp32/control/rpm) for motor RPM setpoint.
+o Display the received setpoint via Serial Monitor.
+4. Broker Connectivity
+o Use a cloud broker (e.g., HiveMQ Cloud).
+o Document your topic structure and message format.
+5. Additional Notes
+* Motor hardware is not required.
+* Ensure QoS selection is justified.
+* All messages must follow a clean JSON structure.
 
 ## Metodología de diseño e implementación de sistemas embebidos
 ### 1. Análisis de requerimientos
