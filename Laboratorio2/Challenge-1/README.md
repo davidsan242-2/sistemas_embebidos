@@ -7,12 +7,14 @@ The system must:
 **Functional Requirements**\
 **1. Environmental Monitoring**\
   - Read and display temperature and relative humidity using the DHT22 sensor.
-  - Refresh values periodically (configurable interval, recommended 1–5 seconds).\
-**2. User Input Interface**\
+  - Refresh values periodically (configurable interval, recommended 1–5 seconds).
+
+**2. User Input Interface**
   - Provide a web interface allowing the user to set a motor speed setpoint (RPM).
   - Show the entered setpoint in the Serial Monitor in real time.
-  - Motor hardware is not required—focus on interface and data flow.\
-**3. Web UI Requirements**\
+  - Motor hardware is not required—focus on interface and data flow.
+
+**3. Web UI Requirements**
 - The server must be mobile-responsive and accessible from any device on the same network.
 - UI must clearly display:
   * Sensor readings
