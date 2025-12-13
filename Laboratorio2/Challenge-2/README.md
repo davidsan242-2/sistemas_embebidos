@@ -1,20 +1,20 @@
 # 1. Challenge 2 - ESP32 MQTT-Based IoT System
 
-2. Challenge 2 – ESP32 MQTT-Based IoT System
 Design and implement a system where the ESP32 communicates using the MQTT protocol. The system must:
-Functional Requirements
-1. Telemetry Publishing
-o Publish temperature and humidity readings periodically (topic naming must follow good
-structure, e.g., esp32/sensors/dht22).
-2. Data Logging or Visualization
-o Use an MQTT dashboard to show sensor values over time.
-3. Setpoint Subscription
-o Subscribe to a topic (e.g., esp32/control/rpm) for motor RPM setpoint.
-o Display the received setpoint via Serial Monitor.
-4. Broker Connectivity
-o Use a cloud broker (e.g., HiveMQ Cloud).
-o Document your topic structure and message format.
-5. Additional Notes
+
+**Functional Requirements**
+
+**1. Telemetry Publishing**
+- Publish temperature and humidity readings periodically (topic naming must follow good structure, e.g., esp32/sensors/dht22).
+**2. Data Logging or Visualization**
+- Use an MQTT dashboard to show sensor values over time.
+**3. Setpoint Subscription**
+- Subscribe to a topic (e.g., esp32/control/rpm) for motor RPM setpoint.
+- Display the received setpoint via Serial Monitor.
+**4. Broker Connectivity**
+- Use a cloud broker (e.g., HiveMQ Cloud).
+- Document your topic structure and message format.
+**5. Additional Notes**
 * Motor hardware is not required.
 * Ensure QoS selection is justified.
 * All messages must follow a clean JSON structure.
