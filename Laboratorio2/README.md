@@ -11,7 +11,7 @@ DOCENTE: BREYNER POSSO
 **David Esteban Sandoval Flórez: 202507595**\
 **Fecha: 2025-12-12**
 
-[Enlace al documento del laboratorio en formato PDF](ESDI_2025-2_Lab-1_v2.pdf)
+[Enlace al documento del laboratorio en formato PDF](ESDI_2025-2_Lab-2.pdf)
 
 [Challenge-1](./Challenge-1)\
 [Challenge-2](./Challenge-2)
