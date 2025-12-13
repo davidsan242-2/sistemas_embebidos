@@ -1,4 +1,4 @@
-# 1. Challenge-1 - ESP32 Standalone Web Server
+# 1. Challenge 1 - ESP32 Standalone Web Server
 
 Design and implement a standalone HTTP web server running on the ESP32.
 
