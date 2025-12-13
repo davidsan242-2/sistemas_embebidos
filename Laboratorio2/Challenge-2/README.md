@@ -6,18 +6,18 @@ Design and implement a system where the ESP32 communicates using the MQTT protoc
 
 **1. Telemetry Publishing**
 - Publish temperature and humidity readings periodically (topic naming must follow good structure, e.g., esp32/sensors/dht22).
-- 
+
 **2. Data Logging or Visualization**
 - Use an MQTT dashboard to show sensor values over time.
-- 
+
 **3. Setpoint Subscription**
 - Subscribe to a topic (e.g., esp32/control/rpm) for motor RPM setpoint.
 - Display the received setpoint via Serial Monitor.
-- 
+
 **4. Broker Connectivity**
 - Use a cloud broker (e.g., HiveMQ Cloud).
 - Document your topic structure and message format.
-- 
+
 **5. Additional Notes**
 * Motor hardware is not required.
 * Ensure QoS selection is justified.
@@ -312,7 +312,4 @@ void loop() {
 ```
 ### 5. Pruebas y validación
 
-[Enlace al archivo con el código Arduino/C++](./Lab2-Challenge1/Lab2-Challenge1.ino)
-
-[Enlace a la simulación](https://wokwi.com/projects/445808350528060417)
-
+[Enlace al archivo con el código Arduino/C++](./Lab2-Challenge2/Lab2-Challenge2.ino)
