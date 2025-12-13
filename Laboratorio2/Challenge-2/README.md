@@ -78,25 +78,19 @@ CONECTARSE AL BROKER MQTT
 
 INICIAR SENSOR DHT22
 
-ESCUCHAR TOPICO RPM MOTOR
+SUSCRIBIRSE TOPICO RPM MOTOR: rpmMotor ← ASIGNAR VALOR PUBLICADO POR MQTT
 
 INICIO CICLO
 
+    SI (estado = Ejecucion) & (tiempoActual - ultimaActualización) > 5000 ENTONCES
+        SET ultimaActualización ← tiempoActual
+        SET temperatura ← OBTENER TEMPERATURA SENSOR DHT22
+        SET humedad ← OBTENER HUMEDAD SENSOR DHT22
 
-
-
-    PARA I DE 1 A 4
-      APAGA LED No. I
-    FIN PARA
-
-    ENCENDER LED No. ledEncendido
-
-    SET ledEncendido ← ledEncendido + 1
-
-    SI ledEncendido >= 5 ENTONCES
-      SET ledEncendido ← 1
+        IMPRIMIR temperatura
+        IMPRIMIR humedad
+        IMPRIMIR rpmMotor
     FIN SI
-  FIN SI
 
 FIN CICLO
 ```
