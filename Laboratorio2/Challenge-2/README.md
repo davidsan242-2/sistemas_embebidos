@@ -27,25 +27,21 @@ Design and implement a system where the ESP32 communicates using the MQTT protoc
 ### 1. Análisis de requerimientos
 #### Requerimientos funcionales
 
-- FR-01: El sistema 
-- FR-02: Al presionar el botón por primera vez el sistema debe encender los LEDs en secuencia a intervalos de 1s, solamente puede haber un LED encendido a la vez
-- FR-03: Al presionar el botón por segunda vez el sistema debe quedar en pausa. El LED que estaba encendido cuando se presionó el botón debe quedar encendido.
-- FR-04: Al presionar el botón por tercera vez el sistema debe seguir encendiendo y apagando los LEDS, comenzando por donde terminó.
-- FR-05: El botón debe implementar algún método de antirrebote para evitar inconsistencias en el comportamiento del sistema
-- FR-06: El botón debe activarse con un pulso negativo
+- FR-01: El sistema debe publicar topicos para temperatura y humedad
+- FR-02: El sistema debe suscribirse a un tópico para recibir el valor del Set Point de las RPM del motor
+- FR-03: El sistema debe publicar cada cinco segundos el valor de la temperatura y la humedad
+- FR-04: El sistema debe imprimir por consola serial los valores de Set Point, temperatura y humedad
+- FR-05: El sistema debe mostrar los valores de temperatura y humedad en dashboards de series de tiempo en Grafana
 
 #### Requerimientos no funcionales
 
-- NFR-01: El sistema debe iniciar automaticamente al conectarse a la energía
-- NFR-02: Los LEDs deben proveer el tipo de luminosidad de chorro
-- NFR-03: Los LEDSs debe arreglarse en línea recta con un espaciado uniforme
-- NFR-04: El color de los 4 LEDs debe ser distinto
+- NFR-01: El sistema debe conectarse a la red Wifi
+- NFR-02: El sistema debe implementar una estructura correcta en el nombre de los tópicos usados 
 
 #### Restricciones
 
-- CON-01: Los LEDs debe conectarse a los pines GPIO y activarse con señales digitales
-- CON-02: Debe implementarse una resistencia pull-Up interna para el botón
-- CON-03: Los LEDs debe conectarse en serie con una resistencia para limitar la corriente
+- CON-01: El sistema debe usar Grafana para mostrar los valores de temperatura y humedad
+- CON-02: El sistema debe usar un broker en la nube
 - CON-04: Se debe entregar el código del sistema en lenguaje Arduino C++ en un archivo con extensión **.ino**
 - CON-05: Se dbe hacer una simulación usando [Wokwi](https://wokwi.com/)
 - CON-06: Se debe hacer la implementación del sistema usando una placa de desarrollo ESP32 S3 y una protoboard
@@ -53,9 +49,7 @@ Design and implement a system where the ESP32 communicates using the MQTT protoc
 ### 2. Análisis del sistema y diseño (arquitectura y componentes)
 
 1. Placa de desarrollo ESP32 S3 DevKit C
-2. Pulsador de cuatro pines
-3. 4 LEDs de 3mm de diferentes colores con luminosidad a chorro
-4. 4 Resistencias de 220 Ohm, 1/4 W y tolerancia de 10%.
+2. Sensor de temperatura y humedad DHT22
 5. 6 jumpers hembra-macho
 6. 2 jumpers macho-macho
 7. Protoboard
