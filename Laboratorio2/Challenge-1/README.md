@@ -5,7 +5,7 @@ Design and implement a standalone HTTP web server running on the ESP32.
 The system must:
 
 **Functional Requirements**\
-**1. Environmental Monitoring**\
+**1. Environmental Monitoring**
   - Read and display temperature and relative humidity using the DHT22 sensor.
   - Refresh values periodically (configurable interval, recommended 1–5 seconds).
 
