@@ -70,7 +70,7 @@ CONECTAR A RED WIFI
 
 INICIO CICLO
 
-  SI (estado = Ejecucion) & (tiempoActual - ultimaActualización) <= 2000 ENTONCES
+  SI (tiempoActual - ultimaActualización) <= 2000 ENTONCES
     SET ultimaActualización ← tiempoActual
 
     SI HAY UNA PETICIÓN DE UN CLIENTE
