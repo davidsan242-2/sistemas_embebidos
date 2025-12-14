@@ -76,10 +76,13 @@ SUSCRIBIRSE TOPICO RPM MOTOR: rpmMotor ← ASIGNAR VALOR PUBLICADO POR MQTT
 
 INICIO CICLO
 
-    SI (estado = Ejecucion) & (tiempoActual - ultimaActualización) > 5000 ENTONCES
+    SI (tiempoActual - ultimaActualización) > 5000 ENTONCES
         SET ultimaActualización ← tiempoActual
         SET temperatura ← OBTENER TEMPERATURA SENSOR DHT22
         SET humedad ← OBTENER HUMEDAD SENSOR DHT22
+
+        PUBLICAR temperatura
+        PUBLICAR humedad
 
         IMPRIMIR temperatura
         IMPRIMIR humedad
